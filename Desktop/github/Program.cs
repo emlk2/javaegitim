@@ -38,3 +38,34 @@ namespace BitwiseProject
         }
     }
 }
+
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        // Başlangıç değerimiz 8 olsun (Binary: 1000)
+        int sayi = 8; 
+        Console.WriteLine($"Baslangic Degeri: {sayi} (Binary: {Convert.ToString(sayi, 2).PadLeft(4, '0')})");
+
+        // 1. SET BIT (Bir biti 1 yapma)
+        // 0. biti (en sağdaki) 1 yapalım. 8 (1000) -> 9 (1001) olur.
+        int setSonuc = sayi | (1 << 0);
+        Console.WriteLine($"SET (0. bit 1 yapildi): {setSonuc} (Binary: {Convert.ToString(setSonuc, 2).PadLeft(4, '0')})");
+
+        // 2. CLEAR BIT (Bir biti 0 yapma)
+        // 3. biti (en soldaki 1'i) 0 yapalım. 8 (1000) -> 0 (0000) olur.
+        int clearSonuc = sayi & ~(1 << 3);
+        Console.WriteLine($"CLEAR (3. bit 0 yapildi): {clearSonuc} (Binary: {Convert.ToString(clearSonuc, 2).PadLeft(4, '0')})");
+
+        // 3. TOGGLE BIT (Bir biti tersine çevirme)
+        // 1. biti tersine çevirelim. 8 (1000) -> 10 (1010) olur.
+        int toggleSonuc = sayi ^ (1 << 1);
+        Console.WriteLine($"TOGGLE (1. bit degistirildi): {toggleSonuc} (Binary: {Convert.ToString(toggleSonuc, 2).PadLeft(4, '0')})");
+
+        // 4. CHECK BIT (Bir bitin durumunu kontrol etme)
+        bool isThirdBitSet = (sayi & (1 << 3)) != 0;
+        Console.WriteLine($"Soru: 3. bit 1 mi? Cevap: {isThirdBitSet}");
+    }
+}
