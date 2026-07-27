@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Öğrenci kayıtlarını yönetmek için geliştirilen okul yönetim sistemi"
+    >
+
+    <title>EduPanel | Okul Yönetim Sistemi</title>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <!-- Dekoratif arka plan şekilleri -->
+    <div class="arka-plan-sekil sekil-1"></div>
+    <div class="arka-plan-sekil sekil-2"></div>
+
+    <div class="uygulama">
+
+        <!-- SOL MENÜ -->
+        <aside class="yan-menu">
+
+            <div class="logo-alani">
+
+                <div class="logo-ikon">
+                    E
+                </div>
+
+                <div>
+                    <h1>EduPanel</h1>
+                    <p>Okul Yönetim Sistemi</p>
+                </div>
+
+            </div>
+
+            <nav class="menu">
+
+                <a href="#panel" class="menu-link aktif">
+                    <span class="menu-ikon">⌂</span>
+                    Genel Bakış
+                </a>
+
+                <a href="#ogrenci-ekle" class="menu-link">
+                    <span class="menu-ikon">＋</span>
+                    Öğrenci Ekle
+                </a>
+
+                <a href="#ogrenciler" class="menu-link">
+                    <span class="menu-ikon">♟</span>
+                    Öğrenciler
+                </a>
+
+            </nav>
+
+            <div class="yan-menu-alt">
+
+                <div class="sistem-durum">
+
+                    <span
+                        id="yan-menu-durum-noktasi"
+                        class="durum-noktasi"
+                    ></span>
+
+                    <div>
+                        <strong>Sistem Durumu</strong>
+
+                        <p id="yan-menu-durum-metni">
+                            Kontrol ediliyor
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+        <!-- ANA İÇERİK -->
+        <main class="ana-icerik">
+
+            <!-- ÜST BAR -->
+            <header class="ust-bar" id="panel">
+
+                <div>
+                    <p class="ust-baslik">
+                        Yönetim Paneli
+                    </p>
+
+                    <h2>
+                        Öğrenci Kontrol Merkezi
+                    </h2>
+                </div>
+
+                <div class="ust-bar-sag">
+
+                    <button
+                        id="yenile-butonu"
+                        class="ikincil-buton"
+                        type="button"
+                    >
+                        ↻ Verileri Yenile
+                    </button>
+
+                    <div class="kullanici-karti">
+
+                        <div class="kullanici-avatar">
+                            A
+                        </div>
+
+                        <div>
+                            <strong>Yönetici</strong>
+                            <span>Admin Paneli</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- TANITIM BÖLÜMÜ -->
+            <section class="hero">
+
+                <div class="hero-icerik">
+
+                    <span class="hero-rozet">
+                        Akıllı okul yönetimi
+                    </span>
+
+                    <h2>
+                        Öğrenci kayıtlarını tek bir panelden yönetin
+                    </h2>
+
+                    <p>
+                        Öğrenci ekleyin, bilgileri güncelleyin,
+                        kayıtlar arasında arama yapın ve öğrencileri
+                        veritabanından silmeden pasif duruma getirin.
+                    </p>
+
+                    <a
+                        href="#ogrenci-ekle"
+                        class="hero-buton"
+                    >
+                        Yeni öğrenci ekle
+                    </a>
+
+                </div>
+
+                <div class="hero-gorsel">
+
+                    <div class="hero-gorsel-ikon">
+                        🎓
+                    </div>
+
+                    
+
+                </div>
+
+            </section>
+
+            <!-- İSTATİSTİK KARTLARI -->
+            <section class="istatistikler">
+
+                <article class="istatistik-karti">
+
+                    <div class="istatistik-ikon mor">
+                        👥
+                    </div>
+
+                    <div>
+                        <p>Aktif Öğrenci</p>
+
+                        <strong id="toplam-ogrenci">
+                            0
+                        </strong>
+                    </div>
+
+                </article>
+
+                <article class="istatistik-karti">
+
+                    <div class="istatistik-ikon mavi">
+                        ⌕
+                    </div>
+
+                    <div>
+                        <p>Gösterilen Kayıt</p>
+
+                        <strong id="gosterilen-ogrenci">
+                            0
+                        </strong>
+                    </div>
+
+                </article>
+
+                <article class="istatistik-karti">
+
+                    <div class="istatistik-ikon turuncu">
+                        #
+                    </div>
+
+                    <div>
+                        <p>Son Öğrenci No</p>
+
+                        <strong id="son-ogrenci-no">
+                            —
+                        </strong>
+                    </div>
+
+                </article>
+
+                <article class="istatistik-karti">
+
+                    <div class="istatistik-ikon yesil">
+                        ✓
+                    </div>
+
+                    <div>
+                        <p>API Durumu</p>
+
+                        <strong id="api-durumu">
+                            Kontrol ediliyor
+                        </strong>
+                    </div>
+
+                </article>
+
+            </section>
+
+            <!-- YENİ ÖĞRENCİ EKLEME BÖLÜMÜ -->
+            <section
+                class="panel-karti form-paneli"
+                id="ogrenci-ekle"
+            >
+
+                <div class="panel-baslik">
+
+                    <div>
+                        <span class="bolum-etiketi">
+                            Kayıt İşlemi
+                        </span>
+
+                        <h3>
+                            Yeni Öğrenci Ekle
+                        </h3>
+
+                        <p>
+                            Öğrencinin temel bilgilerini doldurarak
+                            PostgreSQL veritabanında yeni kayıt oluşturun.
+                        </p>
+                    </div>
+
+                    <div class="panel-baslik-ikon">
+                        ＋
+                    </div>
+
+                </div>
+
+                <form id="ogrenci-formu">
+
+                    <div class="form-grid">
+
+                        <div class="form-grubu">
+
+                            <label for="ad">
+                                Öğrencinin adı
+                            </label>
+
+                            <input
+                                type="text"
+                                id="ad"
+                                name="ad"
+                                placeholder="Örneğin: Ayşe"
+                                minlength="2"
+                                maxlength="100"
+                                autocomplete="off"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="form-grubu">
+
+                            <label for="soyad">
+                                Öğrencinin soyadı
+                            </label>
+
+                            <input
+                                type="text"
+                                id="soyad"
+                                name="soyad"
+                                placeholder="Örneğin: Yılmaz"
+                                minlength="2"
+                                maxlength="100"
+                                autocomplete="off"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="form-grubu">
+
+                            <label for="numara">
+                                Öğrenci numarası
+                            </label>
+
+                            <input
+                                type="text"
+                                id="numara"
+                                name="numara"
+                                placeholder="Örneğin: 2026003"
+                                minlength="3"
+                                maxlength="20"
+                                autocomplete="off"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-alt">
+
+                        <p
+                            id="mesaj"
+                            class="form-mesaji"
+                        ></p>
+
+                        <button
+                            id="ekle-butonu"
+                            class="ana-buton"
+                            type="submit"
+                        >
+                            <span>＋</span>
+                            Öğrenciyi Kaydet
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+            <!-- ÖĞRENCİ LİSTESİ -->
+            <section
+                class="panel-karti tablo-paneli"
+                id="ogrenciler"
+            >
+
+                <div class="panel-baslik tablo-panel-baslik">
+
+                    <div>
+                        <span class="bolum-etiketi">
+                            Kayıt Listesi
+                        </span>
+
+                        <h3>
+                            Öğrenciler
+                        </h3>
+
+                        <p>
+                            Aktif öğrencileri görüntüleyin,
+                            güncelleyin veya pasif duruma getirin.
+                        </p>
+                    </div>
+
+                    <div class="arama-alani">
+
+                        <span>⌕</span>
+
+                        <input
+                            type="search"
+                            id="arama-input"
+                            placeholder="Ad, soyad veya numara ara..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="tablo-kapsayici">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Öğrenci</th>
+                                <th>Öğrenci No</th>
+                                <th>Durum</th>
+                                <th>Kayıt Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="ogrenci-tablosu">
+
+                            <tr>
+                                <td colspan="6">
+
+                                    <div class="yukleniyor">
+                                        <span class="spinner"></span>
+                                        Öğrenciler yükleniyor...
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- Aramada veya veritabanında kayıt bulunmazsa -->
+                <div
+                    id="bos-durum"
+                    class="bos-durum gizli"
+                >
+
+                    <div class="bos-durum-ikon">
+                        📚
+                    </div>
+
+                    <h4>
+                        Öğrenci bulunamadı
+                    </h4>
+
+                    <p>
+                        Arama ölçütünü değiştirin veya yeni öğrenci ekleyin.
+                    </p>
+
+                </div>
+
+            </section>
+
+            <!-- ALT BİLGİ -->
+            <footer>
+
+                <p>
+                    EduPanel Okul Yönetim Sistemi
+                    <span>•</span>
+                    Node.js, Express ve PostgreSQL
+                </p>
+
+            </footer>
+
+        </main>
+
+    </div>
+
+    <!-- ÖĞRENCİ GÜNCELLEME MODALI -->
+    <div
+        id="modal"
+        class="modal gizli"
+    >
+
+        <div
+            class="modal-arka-plan"
+            data-modal-kapat
+        ></div>
+
+        <div class="modal-kart">
+
+            <div class="modal-baslik">
+
+                <div>
+                    <span class="bolum-etiketi">
+                        Düzenleme
+                    </span>
+
+                    <h3>
+                        Öğrenci Bilgilerini Güncelle
+                    </h3>
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-kapat"
+                    data-modal-kapat
+                    aria-label="Pencereyi kapat"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <form id="guncelleme-formu">
+
+                <input
+                    type="hidden"
+                    id="guncelleme-id"
+                >
+
+                <div class="form-grubu">
+
+                    <label for="guncelleme-ad">
+                        Ad
+                    </label>
+
+                    <input
+                        type="text"
+                        id="guncelleme-ad"
+                        minlength="2"
+                        maxlength="100"
+                        autocomplete="off"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-grubu">
+
+                    <label for="guncelleme-soyad">
+                        Soyad
+                    </label>
+
+                    <input
+                        type="text"
+                        id="guncelleme-soyad"
+                        minlength="2"
+                        maxlength="100"
+                        autocomplete="off"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-grubu">
+
+                    <label for="guncelleme-numara">
+                        Öğrenci numarası
+                    </label>
+
+                    <input
+                        type="text"
+                        id="guncelleme-numara"
+                        minlength="3"
+                        maxlength="20"
+                        autocomplete="off"
+                        required
+                    >
+
+                </div>
+
+                <div class="modal-butonlar">
+
+                    <button
+                        type="button"
+                        class="ikincil-buton"
+                        data-modal-kapat
+                    >
+                        Vazgeç
+                    </button>
+
+                    <button
+                        id="guncelleme-butonu"
+                        type="submit"
+                        class="ana-buton"
+                    >
+                        Değişiklikleri Kaydet
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- SAĞ ALT BİLDİRİM KUTUSU -->
+    <div
+        id="bildirim"
+        class="bildirim"
+        role="status"
+        aria-live="polite"
+    >
+
+        <span id="bildirim-ikon">
+            ✓
+        </span>
+
+        <span id="bildirim-metni"></span>
+
+    </div>
+
+    <script src="/script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+OKUL API TAMAMLAMA PAKETI
+
+Bu paket, mevcut projenizdeki backend/app.js dosyasını modüler hale getirir ve
+öğrenci panelinin tekrar çalışması için frontend/script.js dosyasını ekler.
+Ayrıca öğretmen, ders, sınav, not ve devamsızlık tablolarını ve API rotalarını içerir.
+
+1) ÖNCE YEDEK ALIN
+
+Proje klasöründe PowerShell:
+
+Copy-Item .\backend .\backend-yedek -Recurse
+Copy-Item .\prisma\schema.prisma .\prisma\schema-yedek.prisma
+
+2) DOSYALARI KOPYALAYIN
+
+- Bu paketteki backend klasörünün içeriğini projenizdeki backend klasörüne kopyalayın.
+- frontend/script.js dosyasını projenizdeki frontend klasörüne kopyalayın.
+- Bu paketteki prisma/schema.prisma dosyasını projenizdeki schema.prisma ile değiştirin.
+- Mevcut frontend/index.html ve frontend/style.css dosyalarınızı koruyabilirsiniz.
+
+3) PACKAGE.JSON SCRIPTS
+
+package.json içindeki scripts bölümü şöyle olsun:
+
+"scripts": {
+  "start": "node backend/server.js",
+  "dev": "node --watch backend/server.js"
+}
+
+4) PRISMA MIGRATION
+
+PowerShell'de proje kökünde:
+
+npx prisma format
+npx prisma validate
+npx prisma migrate dev --name ders_sinav_not_devamsizlik
+npx prisma generate
+
+migrate reset ÇALIŞTIRMAYIN.
+
+5) SUNUCUYU ÇALIŞTIRIN
+
+npm run dev
+
+6) TEST
+
+Tarayıcı:
+http://localhost:3000
+
+API durum:
+http://localhost:3000/api/sistem/durum
+
+Giriş ekranı otomatik açılır. Admin hesabınızla giriş yaptıktan sonra öğrenci ekleme,
+güncelleme, listeleme ve pasifleştirme işlemleri çalışır.
+
+TEMEL API ADRESLERI
+
+POST   /api/auth/giris
+GET    /api/auth/ben
+
+GET    /api/ogrenciler
+POST   /api/ogrenciler
+PUT    /api/ogrenciler/:id
+DELETE /api/ogrenciler/:id
+POST   /api/ogrenciler/:id/hesap
+
+GET    /api/ogretmenler
+POST   /api/ogretmenler
+PUT    /api/ogretmenler/:id
+DELETE /api/ogretmenler/:id
+POST   /api/ogretmenler/:id/hesap
+
+GET/POST/PUT/DELETE /api/dersler
+GET/POST/PUT/DELETE /api/sinavlar
+GET/POST/DELETE     /api/notlar
+GET/POST/DELETE     /api/devamsizliklar
+
+ROL DAVRANISI
+
+ADMIN:
+- Tüm öğrenci ve öğretmenleri yönetir.
+- Ders oluşturur ve öğretmen atar.
+- Tüm sınav, not ve devamsızlık kayıtlarını görür/yönetir.
+
+OGRETMEN:
+- Yalnızca kendi derslerini ve bu derslerdeki öğrencileri görür.
+- Kendi dersleri için sınav, not ve devamsızlık kaydı oluşturur.
+
+OGRENCI:
+- Yalnızca kendi profilini, derslerini, notlarını ve devamsızlıklarını görür.

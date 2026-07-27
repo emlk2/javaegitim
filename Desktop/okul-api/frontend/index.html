@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>EduPanel | Okul Yönetim Sistemi</title>
+
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
+</head>
+
+<body>
+
+    <section id="giris-ekrani" class="giris-ekrani">
+
+        <div class="giris-tanitim">
+
+            <span class="marka-etiketi">
+                EDUPANEL
+            </span>
+
+            <h1>
+                Okul yönetiminin tüm parçaları tek panelde
+            </h1>
+
+            <p>
+                Yönetici, öğretmen ve öğrenciler kendilerine ait
+                yetkilerle sisteme güvenli biçimde giriş yapar.
+            </p>
+
+            <div class="rol-kartlari">
+
+                <article>
+                    <span>🛡️</span>
+                    <strong>Yönetici</strong>
+
+                    <small>
+                        Öğrenci, öğretmen, ders ve atama yönetimi
+                    </small>
+                </article>
+
+                <article>
+                    <span>👨‍🏫</span>
+                    <strong>Öğretmen</strong>
+
+                    <small>
+                        Kendi dersleri, sınavları ve not işlemleri
+                    </small>
+                </article>
+
+                <article>
+                    <span>🎓</span>
+                    <strong>Öğrenci</strong>
+
+                    <small>
+                        Kendi ders, sınav ve notlarını görüntüleme
+                    </small>
+                </article>
+
+            </div>
+
+        </div>
+
+        <div class="giris-kart-kapsayici">
+
+            <form id="giris-formu" class="giris-karti">
+
+                <div class="logo">
+                    E
+                </div>
+
+                <div class="giris-baslik">
+
+                    <span>EduPanel</span>
+
+                    <h2>
+                        Hesabınıza giriş yapın
+                    </h2>
+
+                    <p>
+                        Kullanıcı adı ve şifrenizi girin.
+                    </p>
+
+                </div>
+
+                <div class="form-grubu">
+
+                    <label for="giris-kullanici-adi">
+                        Kullanıcı adı
+                    </label>
+
+                    <input
+                        id="giris-kullanici-adi"
+                        type="text"
+                        autocomplete="username"
+                        placeholder="Kullanıcı adınız"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-grubu">
+
+                    <label for="giris-sifre">
+                        Şifre
+                    </label>
+
+                    <input
+                        id="giris-sifre"
+                        type="password"
+                        autocomplete="current-password"
+                        placeholder="Şifreniz"
+                        required
+                    >
+
+                </div>
+
+                <p
+                    id="giris-mesaji"
+                    class="form-mesaji"
+                ></p>
+
+                <button
+                    id="giris-butonu"
+                    class="ana-buton tam-genislik"
+                    type="submit"
+                >
+                    Giriş Yap
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <div id="uygulama" class="uygulama gizli">
+
+        <aside class="yan-menu">
+
+            <div class="logo-alani">
+
+                <div class="logo-ikon">
+                    E
+                </div>
+
+                <div>
+                    <h1>EduPanel</h1>
+                    <p>Okul Yönetim Sistemi</p>
+                </div>
+
+            </div>
+
+            <nav id="menu" class="menu">
+
+                <button
+                    class="menu-link aktif"
+                    data-gorunum="gorunum-ozet"
+                    data-roller="admin,ogretmen,ogrenci"
+                    type="button"
+                >
+                    <span>⌂</span>
+                    Genel Bakış
+                </button>
+
+                <button
+                    class="menu-link"
+                    data-gorunum="gorunum-ogrenciler"
+                    data-roller="admin"
+                    type="button"
+                >
+                    <span>🎓</span>
+                    Öğrenciler
+                </button>
+
+                <button
+                    class="menu-link"
+                    data-gorunum="gorunum-ogretmenler"
+                    data-roller="admin"
+                    type="button"
+                >
+                    <span>👨‍🏫</span>
+                    Öğretmenler
+                </button>
+
+                <button
+                    class="menu-link"
+                    data-gorunum="gorunum-dersler"
+                    data-roller="admin"
+                    type="button"
+                >
+                    <span>📚</span>
+                    Dersler
+                </button>
+
+                <button
+                    class="menu-link"
+                    data-gorunum="gorunum-atamalar"
+                    data-roller="admin"
+                    type="button"
+                >
+                    <span>🔗</span>
+                    Ders Atamaları
+                </button>
+
+                <button
+                    class="menu-link"
+                    data-gorunum="gorunum-ogretmen-paneli"
+                    data-roller="ogretmen"
+                    type="button"
+                >
+                    <span>📘</span>
+                    Derslerim ve Sınavlar
+                </button>
+
+                <button
+                    class="menu-link"
+                    data-gorunum="gorunum-ogrenci-paneli"
+                    data-roller="ogrenci"
+                    type="button"
+                >
+                    <span>📖</span>
+                    Derslerim
+                </button>
+
+            </nav>
+
+            <div class="yan-menu-alt">
+
+                <div class="sistem-durum">
+
+                    <span
+                        id="sistem-durum-noktasi"
+                        class="durum-noktasi"
+                    ></span>
+
+                    <div>
+
+                        <strong>
+                            Sistem Durumu
+                        </strong>
+
+                        <p id="sistem-durum-metni">
+                            Kontrol ediliyor
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <main class="ana-icerik">
+
+            <header class="ust-bar">
+
+                <div>
+
+                    <p class="ust-baslik">
+                        Okul Yönetim Sistemi
+                    </p>
+
+                    <h2 id="sayfa-basligi">
+                        Genel Bakış
+                    </h2>
+
+                </div>
+
+                <div class="ust-bar-sag">
+
+                    <div class="kullanici-karti">
+
+                        <div
+                            id="kullanici-avatar"
+                            class="kullanici-avatar"
+                        >
+                            K
+                        </div>
+
+                        <div>
+
+                            <strong id="aktif-kullanici-adi">
+                                Kullanıcı
+                            </strong>
+
+                            <span id="aktif-kullanici-rolu">
+                                Rol
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        id="cikis-butonu"
+                        class="tehlike-buton"
+                        type="button"
+                    >
+                        Çıkış Yap
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <section
+                id="gorunum-ozet"
+                class="gorunum"
+            >
+
+                <div class="hero">
+
+                    <div>
+
+                        <span class="hero-rozet">
+                            Hoş geldiniz
+                        </span>
+
+                        <h2 id="hosgeldin-basligi">
+                            EduPanel yönetim merkezi
+                        </h2>
+
+                        <p id="hosgeldin-metni">
+                            Rolünüze özel işlemlere yan menüden ulaşabilirsiniz.
+                        </p>
+
+                    </div>
+
+                    <div class="hero-gorsel">
+                        🎓
+                    </div>
+
+                </div>
+
+                <div class="istatistikler">
+
+                    <article class="istatistik-karti">
+
+                        <span>🎓</span>
+
+                        <div>
+                            <p>Aktif Öğrenci</p>
+                            <strong id="istatistik-ogrenci">—</strong>
+                        </div>
+
+                    </article>
+
+                    <article class="istatistik-karti">
+
+                        <span>👨‍🏫</span>
+
+                        <div>
+                            <p>Aktif Öğretmen</p>
+                            <strong id="istatistik-ogretmen">—</strong>
+                        </div>
+
+                    </article>
+
+                    <article class="istatistik-karti">
+
+                        <span>📚</span>
+
+                        <div>
+                            <p>Aktif Ders</p>
+                            <strong id="istatistik-ders">—</strong>
+                        </div>
+
+                    </article>
+
+                    <article class="istatistik-karti">
+
+                        <span>✓</span>
+
+                        <div>
+
+                            <p>API Durumu</p>
+
+                            <strong id="istatistik-api">
+                                Kontrol ediliyor
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <section
+                id="gorunum-ogrenciler"
+                class="gorunum gizli"
+            >
+
+                <div class="iki-kolon">
+
+                    <article class="panel-karti">
+
+                        <div class="panel-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Yeni kayıt
+                                </span>
+
+                                <h3>Öğrenci Ekle</h3>
+
+                            </div>
+
+                        </div>
+
+                        <form id="ogrenci-formu" class="form-grid">
+
+                            <div class="form-grubu">
+
+                                <label for="ogrenci-ad">
+                                    Ad
+                                </label>
+
+                                <input
+                                    id="ogrenci-ad"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogrenci-soyad">
+                                    Soyad
+                                </label>
+
+                                <input
+                                    id="ogrenci-soyad"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogrenci-no">
+                                    Öğrenci No
+                                </label>
+
+                                <input
+                                    id="ogrenci-no"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogrenci-kullanici-adi">
+                                    Kullanıcı adı
+                                </label>
+
+                                <input
+                                    id="ogrenci-kullanici-adi"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogrenci-email">
+                                    E-posta
+                                </label>
+
+                                <input
+                                    id="ogrenci-email"
+                                    type="email"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogrenci-sifre">
+                                    Şifre
+                                </label>
+
+                                <input
+                                    id="ogrenci-sifre"
+                                    type="password"
+                                    minlength="8"
+                                    required
+                                >
+
+                            </div>
+
+                            <button
+                                class="ana-buton"
+                                type="submit"
+                            >
+                                Öğrenciyi Kaydet
+                            </button>
+
+                        </form>
+
+                    </article>
+
+
+                    <article class="panel-karti tablo-paneli">
+
+                        <div class="panel-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Aktif kayıtlar
+                                </span>
+
+                                <h3>Öğrenci Listesi</h3>
+
+                            </div>
+
+                            <button
+                                id="ogrencileri-yenile"
+                                class="ikincil-buton"
+                                type="button"
+                            >
+                                Yenile
+                            </button>
+
+                        </div>
+
+                        <div class="tablo-kapsayici">
+
+                            <table>
+
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ad Soyad</th>
+                                        <th>Öğrenci No</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="ogrenci-tablosu"></tbody>
+
+                            </table>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <section
+                id="gorunum-ogretmenler"
+                class="gorunum gizli"
+            >
+
+                <div class="iki-kolon">
+
+                    <article class="panel-karti">
+
+                        <div class="panel-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Yeni kayıt
+                                </span>
+
+                                <h3>Öğretmen Ekle</h3>
+
+                            </div>
+
+                        </div>
+
+                        <form
+                            id="ogretmen-formu"
+                            class="form-grid"
+                        >
+
+                            <div class="form-grubu">
+
+                                <label for="ogretmen-ad">
+                                    Ad
+                                </label>
+
+                                <input
+                                    id="ogretmen-ad"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogretmen-soyad">
+                                    Soyad
+                                </label>
+
+                                <input
+                                    id="ogretmen-soyad"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogretmen-sicil-no">
+                                    Sicil No
+                                </label>
+
+                                <input
+                                    id="ogretmen-sicil-no"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogretmen-brans">
+                                    Branş
+                                </label>
+
+                                <input
+                                    id="ogretmen-brans"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogretmen-kullanici-adi">
+                                    Kullanıcı adı
+                                </label>
+
+                                <input
+                                    id="ogretmen-kullanici-adi"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogretmen-email">
+                                    E-posta
+                                </label>
+
+                                <input
+                                    id="ogretmen-email"
+                                    type="email"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ogretmen-sifre">
+                                    Şifre
+                                </label>
+
+                                <input
+                                    id="ogretmen-sifre"
+                                    type="password"
+                                    minlength="8"
+                                    required
+                                >
+
+                            </div>
+
+                            <button
+                                class="ana-buton"
+                                type="submit"
+                            >
+                                Öğretmeni Kaydet
+                            </button>
+
+                        </form>
+
+                    </article>
+
+
+                    <article class="panel-karti tablo-paneli">
+
+                        <div class="panel-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Aktif kayıtlar
+                                </span>
+
+                                <h3>Öğretmen Listesi</h3>
+
+                            </div>
+
+                        </div>
+
+                        <div class="tablo-kapsayici">
+
+                            <table>
+
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ad Soyad</th>
+                                        <th>Sicil No</th>
+                                        <th>Branş</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="ogretmen-tablosu"></tbody>
+
+                            </table>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <section
+                id="gorunum-dersler"
+                class="gorunum gizli"
+            >
+
+                <div class="iki-kolon">
+
+                    <article class="panel-karti">
+
+                        <div class="panel-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Yeni ders
+                                </span>
+
+                                <h3>Ders Oluştur</h3>
+
+                            </div>
+
+                        </div>
+
+                        <form id="ders-formu" class="form-grid">
+
+                            <div class="form-grubu">
+
+                                <label for="ders-kodu">
+                                    Ders Kodu
+                                </label>
+
+                                <input
+                                    id="ders-kodu"
+                                    placeholder="MAT101"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="ders-adi">
+                                    Ders Adı
+                                </label>
+
+                                <input
+                                    id="ders-adi"
+                                    placeholder="Matematik"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu tam-satir">
+
+                                <label for="ders-aciklama">
+                                    Açıklama
+                                </label>
+
+                                <textarea
+                                    id="ders-aciklama"
+                                    rows="4"
+                                ></textarea>
+
+                            </div>
+
+                            <button
+                                class="ana-buton"
+                                type="submit"
+                            >
+                                Dersi Oluştur
+                            </button>
+
+                        </form>
+
+                    </article>
+
+
+                    <article class="panel-karti tablo-paneli">
+
+                        <div class="panel-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Aktif dersler
+                                </span>
+
+                                <h3>Ders Listesi</h3>
+
+                            </div>
+
+                        </div>
+
+                        <div class="tablo-kapsayici">
+
+                            <table>
+
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ders Kodu</th>
+                                        <th>Ders Adı</th>
+                                        <th>Açıklama</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="ders-tablosu"></tbody>
+
+                            </table>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <section
+                id="gorunum-atamalar"
+                class="gorunum gizli"
+            >
+
+                <div class="iki-kolon">
+
+                    <article class="panel-karti">
+
+                        <div class="panel-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Öğretmen ataması
+                                </span>
+
+                                <h3>Öğretmene Ders Ata</h3>
+
+                            </div>
+
+                        </div>
+
+                        <form id="ogretmen-ders-formu">
+
+                            <div class="form-grubu">
+
+                                <label for="atama-ogretmen">
+                                    Öğretmen
+                                </label>
+
+                                <select
+                                    id="atama-ogretmen"
+                                    required
+                                ></select>
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="atama-ders">
+                                    Ders
+                                </label>
+
+                                <select
+                                    id="atama-ders"
+                                    required
+                                ></select>
+
+                            </div>
+
+                            <button
+                                class="ana-buton"
+                                type="submit"
+                            >
+                                Dersi Öğretmene Ata
+                            </button>
+
+                        </form>
+
+                    </article>
+
+
+                    <article class="panel-karti">
+
+                        <div class="panel-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Öğrenci kaydı
+                                </span>
+
+                                <h3>Öğrenciyi Derse Kaydet</h3>
+
+                            </div>
+
+                        </div>
+
+                        <form id="ogrenci-ders-formu">
+
+                            <div class="form-grubu">
+
+                                <label for="kayit-ogrenci">
+                                    Öğrenci
+                                </label>
+
+                                <select
+                                    id="kayit-ogrenci"
+                                    required
+                                ></select>
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="kayit-ders">
+                                    Ders
+                                </label>
+
+                                <select
+                                    id="kayit-ders"
+                                    required
+                                ></select>
+
+                            </div>
+
+                            <button
+                                class="ana-buton"
+                                type="submit"
+                            >
+                                Öğrenciyi Derse Kaydet
+                            </button>
+
+                        </form>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <section
+                id="gorunum-ogretmen-paneli"
+                class="gorunum gizli"
+            >
+
+                <div class="iki-kolon">
+
+                    <article class="panel-karti">
+
+                        <div class="panel-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Atanmış dersler
+                                </span>
+
+                                <h3>Derslerim</h3>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            id="ogretmen-ders-listesi"
+                            class="kart-listesi"
+                        ></div>
+
+                    </article>
+
+
+                    <article class="panel-karti">
+
+                        <div class="panel-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Yeni sınav
+                                </span>
+
+                                <h3>Sınav Oluştur</h3>
+
+                            </div>
+
+                        </div>
+
+                        <form id="sinav-formu">
+
+                            <div class="form-grubu">
+
+                                <label for="sinav-ders">
+                                    Ders
+                                </label>
+
+                                <select
+                                    id="sinav-ders"
+                                    required
+                                ></select>
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="sinav-adi">
+                                    Sınav Adı
+                                </label>
+
+                                <input
+                                    id="sinav-adi"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="sinav-tarihi">
+                                    Sınav Tarihi
+                                </label>
+
+                                <input
+                                    id="sinav-tarihi"
+                                    type="datetime-local"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="sinav-puan">
+                                    Maksimum Puan
+                                </label>
+
+                                <input
+                                    id="sinav-puan"
+                                    type="number"
+                                    min="1"
+                                    value="100"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-grubu">
+
+                                <label for="sinav-aciklama">
+                                    Açıklama
+                                </label>
+
+                                <textarea
+                                    id="sinav-aciklama"
+                                    rows="4"
+                                ></textarea>
+
+                            </div>
+
+                            <button
+                                class="ana-buton"
+                                type="submit"
+                            >
+                                Sınavı Oluştur
+                            </button>
+
+                        </form>
+
+                        <div
+                            id="son-olusturulan-sinav"
+                            class="sonuc-karti gizli"
+                        ></div>
+
+                    </article>
+
+                </div>
+
+
+                <article class="panel-karti panel-karti-alt">
+
+                    <div class="panel-baslik">
+
+                        <div>
+
+                            <span class="bolum-etiketi">
+                                Oluşturulan sınavlar
+                            </span>
+
+                            <h3>Sınavlarım</h3>
+
+                        </div>
+
+                        <button
+                            id="ogretmen-sinavlari-yenile"
+                            class="ikincil-buton"
+                            type="button"
+                        >
+                            Yenile
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="ogretmen-sinav-listesi"
+                        class="kart-listesi"
+                    ></div>
+
+                </article>
+
+
+                <article class="panel-karti panel-karti-alt">
+
+                    <div class="panel-baslik">
+
+                        <div>
+
+                            <span class="bolum-etiketi">
+                                Not işlemleri
+                            </span>
+
+                            <h3>Öğrenci Notları</h3>
+
+                        </div>
+
+                    </div>
+
+                    <div class="not-secim-alani">
+
+                        <div class="form-grubu">
+
+                            <label for="not-sinav-secimi">
+                                Sınav seçin
+                            </label>
+
+                            <select id="not-sinav-secimi">
+
+                                <option value="">
+                                    Önce bir sınav seçin
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <button
+                            id="sinav-ogrencilerini-getir"
+                            class="ana-buton"
+                            type="button"
+                        >
+                            Öğrencileri Getir
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="not-giris-alani"
+                        class="gizli"
+                    >
+
+                        <div class="not-giris-baslik">
+
+                            <div>
+
+                                <span class="bolum-etiketi">
+                                    Seçilen sınav
+                                </span>
+
+                                <h4 id="not-sinav-basligi">
+                                    Sınav
+                                </h4>
+
+                            </div>
+
+                            <span id="not-sinav-puani"></span>
+
+                        </div>
+
+                        <div class="tablo-kapsayici">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Öğrenci</th>
+                                        <th>Öğrenci No</th>
+                                        <th>Puan</th>
+                                        <th>Açıklama</th>
+                                        <th>İşlem</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="not-ogrenci-tablosu"></tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </article>
+                <!-- =================================================
+     ÖĞRETMEN: DEVAMSIZLIK İŞLEMLERİ
+================================================== -->
+
+<article class="panel-karti panel-karti-alt">
+
+    <div class="panel-baslik">
+        <div>
+            <span class="bolum-etiketi">
+                Yoklama işlemleri
+            </span>
+
+            <h3>Devamsızlık Girişi</h3>
+        </div>
+    </div>
+
+    <div class="devamsizlik-secim-alani">
+
+        <div class="form-grubu">
+            <label for="devamsizlik-ders-secimi">
+                Ders
+            </label>
+
+            <select id="devamsizlik-ders-secimi">
+                <option value="">
+                    Ders seçin
+                </option>
+            </select>
+        </div>
+
+        <div class="form-grubu">
+            <label for="devamsizlik-tarihi">
+                Yoklama Tarihi
+            </label>
+
+            <input
+                id="devamsizlik-tarihi"
+                type="date"
+            >
+        </div>
+
+        <button
+            id="devamsizlik-ogrencilerini-getir"
+            class="ana-buton"
+            type="button"
+        >
+            Öğrencileri Getir
+        </button>
+
+    </div>
+
+    <div
+        id="devamsizlik-giris-alani"
+        class="gizli"
+    >
+
+        <div class="devamsizlik-giris-baslik">
+
+            <div>
+                <span class="bolum-etiketi">
+                    Seçilen ders
+                </span>
+
+                <h4 id="devamsizlik-ders-basligi">
+                    Ders
+                </h4>
+            </div>
+
+            <span id="devamsizlik-secili-tarih"></span>
+
+        </div>
+
+        <div class="tablo-kapsayici">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Öğrenci</th>
+                        <th>Öğrenci No</th>
+                        <th>Durum</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+
+                <tbody
+                    id="devamsizlik-ogrenci-tablosu"
+                ></tbody>
+
+            </table>
+
+        </div>
+
+        <div class="devamsizlik-kaydet-alani">
+
+            <button
+                id="devamsizliklari-kaydet"
+                class="ana-buton"
+                type="button"
+            >
+                Devamsızlıkları Kaydet
+            </button>
+
+        </div>
+
+    </div>
+
+</article>
+
+            </section>
+
+
+            <section
+                id="gorunum-ogrenci-paneli"
+                class="gorunum gizli"
+            >
+
+                <article class="panel-karti">
+
+                    <div class="panel-baslik">
+
+                        <div>
+
+                            <span class="bolum-etiketi">
+                                Kayıtlı dersler
+                            </span>
+
+                            <h3>Derslerim</h3>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="ogrenci-ders-listesi"
+                        class="kart-listesi"
+                    ></div>
+
+                </article>
+
+
+                <article class="panel-karti panel-karti-alt">
+
+                    <div class="panel-baslik">
+
+                        <div>
+
+                            <span class="bolum-etiketi">
+                                Yaklaşan ve mevcut sınavlar
+                            </span>
+
+                            <h3>Sınavlarım</h3>
+
+                        </div>
+
+                        <button
+                            id="ogrenci-sinavlari-yenile"
+                            class="ikincil-buton"
+                            type="button"
+                        >
+                            Yenile
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="ogrenci-sinav-listesi"
+                        class="kart-listesi"
+                    ></div>
+
+                </article>
+
+
+                <article class="panel-karti panel-karti-alt">
+
+                    <div class="panel-baslik">
+
+                        <div>
+
+                            <span class="bolum-etiketi">
+                                Akademik sonuçlar
+                            </span>
+
+                            <h3>Notlarım</h3>
+
+                        </div>
+
+                        <button
+                            id="ogrenci-notlari-yenile"
+                            class="ikincil-buton"
+                            type="button"
+                        >
+                            Yenile
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="ogrenci-not-listesi"
+                        class="kart-listesi"
+                    ></div>
+
+                </article>
+                <!-- =================================================
+     ÖĞRENCİ: DEVAMSIZLIKLARIM
+================================================== -->
+
+<article class="panel-karti panel-karti-alt">
+
+    <div class="panel-baslik">
+
+        <div>
+            <span class="bolum-etiketi">
+                Yoklama bilgileri
+            </span>
+
+            <h3>Devamsızlıklarım</h3>
+        </div>
+
+        <button
+            id="ogrenci-devamsizliklari-yenile"
+            class="ikincil-buton"
+            type="button"
+        >
+            Yenile
+        </button>
+
+    </div>
+
+    <div class="devamsizlik-ozet">
+
+        <div class="devamsizlik-ozet-karti">
+            <span>Toplam Kayıt</span>
+
+            <strong id="devamsizlik-toplam">
+                0
+            </strong>
+        </div>
+
+        <div class="devamsizlik-ozet-karti basarili">
+            <span>Geldi</span>
+
+            <strong id="devamsizlik-geldi">
+                0
+            </strong>
+        </div>
+
+        <div class="devamsizlik-ozet-karti tehlike">
+            <span>Gelmedi</span>
+
+            <strong id="devamsizlik-gelmedi">
+                0
+            </strong>
+        </div>
+
+        <div class="devamsizlik-ozet-karti uyari">
+            <span>Geç Kaldı</span>
+
+            <strong id="devamsizlik-gec-kaldi">
+                0
+            </strong>
+        </div>
+
+        <div class="devamsizlik-ozet-karti bilgi">
+            <span>İzinli</span>
+
+            <strong id="devamsizlik-izinli">
+                0
+            </strong>
+        </div>
+
+    </div>
+
+    <div
+        id="ogrenci-devamsizlik-listesi"
+        class="kart-listesi"
+    >
+        <div class="bos-durum">
+            Devamsızlık bilgileri yükleniyor.
+        </div>
+    </div>
+
+</article>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <div
+        id="ogrenci-modal"
+        class="modal gizli"
+    >
+
+        <div
+            class="modal-arka-plan"
+            data-modal-kapat
+        ></div>
+
+        <div class="modal-kart">
+
+            <div class="panel-baslik">
+
+                <div>
+
+                    <span class="bolum-etiketi">
+                        Düzenleme
+                    </span>
+
+                    <h3>
+                        Öğrenciyi Güncelle
+                    </h3>
+
+                </div>
+
+                <button
+                    class="modal-kapat"
+                    type="button"
+                    data-modal-kapat
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <form id="ogrenci-guncelleme-formu">
+
+                <input
+                    id="guncelleme-ogrenci-id"
+                    type="hidden"
+                >
+
+                <div class="form-grubu">
+
+                    <label for="guncelleme-ogrenci-ad">
+                        Ad
+                    </label>
+
+                    <input
+                        id="guncelleme-ogrenci-ad"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-grubu">
+
+                    <label for="guncelleme-ogrenci-soyad">
+                        Soyad
+                    </label>
+
+                    <input
+                        id="guncelleme-ogrenci-soyad"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-grubu">
+
+                    <label for="guncelleme-ogrenci-no">
+                        Öğrenci No
+                    </label>
+
+                    <input
+                        id="guncelleme-ogrenci-no"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    class="ana-buton"
+                    type="submit"
+                >
+                    Değişiklikleri Kaydet
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="bildirim"
+        class="bildirim"
+        role="status"
+    >
+        <span id="bildirim-metni"></span>
+    </div>
+
+</body>
+</html>

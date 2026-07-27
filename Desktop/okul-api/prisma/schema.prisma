@@ -1,0 +1,163 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model kullanicilar {
+  id                Int      @id @default(autoincrement())
+  kullanici_adi     String   @unique @db.VarChar(50)
+  email             String   @unique @db.VarChar(150)
+  sifre_hash        String   @db.VarChar(255)
+  rol               String   @db.VarChar(20)
+  aktif             Boolean  @default(true)
+  olusturma_tarihi  DateTime @default(now()) @db.Timestamptz(6)
+  guncelleme_tarihi DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  ogrenciler  ogrenciler?
+  ogretmenler ogretmenler?
+}
+
+model ogrenciler {
+  id                Int       @id @default(autoincrement())
+  ad                String    @db.VarChar(100)
+  soyad             String    @db.VarChar(100)
+  ogrenci_no        String    @unique @db.VarChar(20)
+  aktif             Boolean   @default(true)
+  silinme_tarihi    DateTime? @db.Timestamptz(6)
+  kayit_tarihi      DateTime  @default(now()) @db.Timestamptz(6)
+  guncelleme_tarihi DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+
+  kullanici_id   Int?               @unique
+  kullanicilar   kullanicilar?      @relation(fields: [kullanici_id], references: [id], onDelete: Restrict, map: "fk_ogretmenler_kullanicilar")
+  ders_kayitlari ogrenci_dersleri[]
+  notlars        notlar[]
+  devamsizliklar devamsizliklar[]
+}
+
+model ogretmenler {
+  id                Int       @id @default(autoincrement())
+  ad                String    @db.VarChar(100)
+  soyad             String    @db.VarChar(100)
+  sicil_no          String    @unique @db.VarChar(30)
+  brans             String?   @db.VarChar(100)
+  aktif             Boolean   @default(true)
+  silinme_tarihi    DateTime? @db.Timestamptz(6)
+  kayit_tarihi      DateTime  @default(now()) @db.Timestamptz(6)
+  guncelleme_tarihi DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+
+  kullanici_id Int?          @unique
+  kullanicilar kullanicilar? @relation(fields: [kullanici_id], references: [id], onDelete: Restrict, map: "fk_ogrenciler_kullanicilar")
+
+  ders_atamalari ogretmen_dersleri[]
+  sinavlar       sinavlar[]
+  devamsizliklar devamsizliklar[]
+}
+
+model dersler {
+  id                Int      @id @default(autoincrement())
+  ders_kodu         String   @unique @db.VarChar(30)
+  ders_adi          String   @db.VarChar(150)
+  aciklama          String?  @db.VarChar(500)
+  aktif             Boolean  @default(true)
+  olusturma_tarihi  DateTime @default(now()) @db.Timestamptz(6)
+  guncelleme_tarihi DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  ogretmen_atamalari ogretmen_dersleri[]
+  ogrenci_kayitlari  ogrenci_dersleri[]
+  sinavlar           sinavlar[]
+  devamsizliklar     devamsizliklar[]
+}
+
+model ogretmen_dersleri {
+  id                Int      @id @default(autoincrement())
+  ogretmen_id       Int
+  ders_id           Int
+  aktif             Boolean  @default(true)
+  atama_tarihi      DateTime @default(now()) @db.Timestamptz(6)
+  guncelleme_tarihi DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  ogretmen ogretmenler @relation(fields: [ogretmen_id], references: [id], onDelete: Restrict, map: "fk_ogretmen_dersleri_ogretmenler")
+  ders     dersler     @relation(fields: [ders_id], references: [id], onDelete: Restrict, map: "fk_ogretmen_dersleri_dersler")
+
+  @@unique([ogretmen_id, ders_id], map: "uq_ogretmen_dersleri")
+}
+
+model ogrenci_dersleri {
+  id                Int      @id @default(autoincrement())
+  ogrenci_id        Int
+  ders_id           Int
+  aktif             Boolean  @default(true)
+  kayit_tarihi      DateTime @default(now()) @db.Timestamptz(6)
+  guncelleme_tarihi DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  ogrenci ogrenciler @relation(fields: [ogrenci_id], references: [id], onDelete: Restrict, map: "fk_ogrenci_dersleri_ogrenciler")
+  ders    dersler    @relation(fields: [ders_id], references: [id], onDelete: Restrict, map: "fk_ogrenci_dersleri_dersler")
+
+  @@unique([ogrenci_id, ders_id], map: "uq_ogrenci_dersleri")
+}
+
+model sinavlar {
+  id                Int      @id @default(autoincrement())
+  ders_id           Int
+  ogretmen_id       Int
+  sinav_adi         String   @db.VarChar(150)
+  sinav_tarihi      DateTime @db.Timestamptz(6)
+  maksimum_puan     Float    @default(100)
+  aciklama          String?  @db.VarChar(500)
+  aktif             Boolean  @default(true)
+  olusturma_tarihi  DateTime @default(now()) @db.Timestamptz(6)
+  guncelleme_tarihi DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  ders     dersler     @relation(fields: [ders_id], references: [id], onDelete: Restrict, map: "fk_sinavlar_dersler")
+  ogretmen ogretmenler @relation(fields: [ogretmen_id], references: [id], onDelete: Restrict, map: "fk_sinavlar_ogretmenler")
+  notlar   notlar[]
+
+  @@index([ders_id], map: "idx_sinavlar_ders_id")
+  @@index([ogretmen_id], map: "idx_sinavlar_ogretmen_id")
+}
+
+model notlar {
+  id                Int      @id @default(autoincrement())
+  sinav_id          Int
+  ogrenci_id        Int
+  puan              Float
+  aciklama          String?  @db.VarChar(500)
+  aktif             Boolean  @default(true)
+  olusturma_tarihi  DateTime @default(now()) @db.Timestamptz(6)
+  guncelleme_tarihi DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  sinav   sinavlar   @relation(fields: [sinav_id], references: [id], onDelete: Restrict)
+  ogrenci ogrenciler @relation(fields: [ogrenci_id], references: [id], onDelete: Restrict)
+
+  @@unique([sinav_id, ogrenci_id])
+  @@index([sinav_id])
+  @@index([ogrenci_id])
+}
+
+model devamsizliklar {
+  id                 Int      @id @default(autoincrement())
+  ogrenci_id         Int
+  ders_id            Int
+  ogretmen_id        Int
+  devamsizlik_tarihi DateTime @db.Date
+  durum              String   @db.VarChar(20)
+  aciklama           String?  @db.VarChar(500)
+  aktif              Boolean  @default(true)
+  olusturma_tarihi   DateTime @default(now()) @db.Timestamptz(6)
+  guncelleme_tarihi  DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  ogrenci  ogrenciler  @relation(fields: [ogrenci_id], references: [id], onDelete: Restrict)
+  ders     dersler     @relation(fields: [ders_id], references: [id], onDelete: Restrict)
+  ogretmen ogretmenler @relation(fields: [ogretmen_id], references: [id], onDelete: Restrict)
+
+  @@unique([ogrenci_id, ders_id, devamsizlik_tarihi])
+  @@index([ogrenci_id])
+  @@index([ders_id])
+  @@index([ogretmen_id])
+  @@index([devamsizlik_tarihi])
+}
