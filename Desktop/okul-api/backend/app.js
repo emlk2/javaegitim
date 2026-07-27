@@ -1537,15 +1537,14 @@ app.get(
                     },
 
                     include: {
-                        notlar: {
-                            where: {
-                                sinav_id: sinav.id,
-                                aktif: true
-                            },
-
-                            take: 1
-                        }
-                    },
+    notlars: {
+        where: {
+            sinav_id: sinavId,
+            aktif: true
+        },
+        take: 1
+    }
+},
 
                     orderBy: [
                         {
@@ -1560,7 +1559,7 @@ app.get(
             const ogrenciListesi =
                 ogrenciler.map((ogrenci) => {
                     const mevcutNot =
-                        ogrenci.notlar[0] || null;
+                        ogrenci.notlars[0] || null;
 
                     return {
                         id: ogrenci.id,
@@ -2723,6 +2722,725 @@ app.get(
             return res.status(500).json({
                 mesaj:
                     "Devamsızlık bilgileri getirilemedi",
+
+                hata:
+                    hata.message
+            });
+        }
+    }
+);
+
+/* =====================================================
+   ADMIN: ÖĞRETMEN GÜNCELLEME
+===================================================== */
+
+app.put(
+    "/api/ogretmenler/:id",
+    kimlikDogrula,
+    rolDogrula("admin"),
+    async (req, res) => {
+        try {
+            const ogretmenId =
+                Number(req.params.id);
+
+            const {
+                ad,
+                soyad,
+                sicil_no,
+                brans
+            } = req.body;
+
+            const duzenlenmisAd =
+                String(ad || "").trim();
+
+            const duzenlenmisSoyad =
+                String(soyad || "").trim();
+
+            const duzenlenmisSicilNo =
+                String(sicil_no || "").trim();
+
+            const duzenlenmisBrans =
+                String(brans || "").trim();
+
+            if (
+                !Number.isInteger(ogretmenId) ||
+                ogretmenId <= 0
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Geçerli bir öğretmen ID değeri gönderilmelidir"
+                });
+            }
+
+            if (
+                !duzenlenmisAd ||
+                !duzenlenmisSoyad ||
+                !duzenlenmisSicilNo ||
+                !duzenlenmisBrans
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Ad, soyad, sicil numarası ve branş zorunludur"
+                });
+            }
+
+            if (
+                duzenlenmisAd.length > 100 ||
+                duzenlenmisSoyad.length > 100
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Ad ve soyad en fazla 100 karakter olabilir"
+                });
+            }
+
+            if (
+                duzenlenmisSicilNo.length > 50
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Sicil numarası en fazla 50 karakter olabilir"
+                });
+            }
+
+            if (
+                duzenlenmisBrans.length > 100
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Branş en fazla 100 karakter olabilir"
+                });
+            }
+
+            const mevcutOgretmen =
+                await prisma.ogretmenler.findUnique({
+                    where: {
+                        id: ogretmenId
+                    }
+                });
+
+            if (!mevcutOgretmen) {
+                return res.status(404).json({
+                    mesaj:
+                        "Öğretmen bulunamadı"
+                });
+            }
+
+            const ayniSicilNumarasi =
+                await prisma.ogretmenler.findFirst({
+                    where: {
+                        sicil_no:
+                            duzenlenmisSicilNo,
+
+                        NOT: {
+                            id: ogretmenId
+                        }
+                    }
+                });
+
+            if (ayniSicilNumarasi) {
+                return res.status(409).json({
+                    mesaj:
+                        "Bu sicil numarası başka bir öğretmen tarafından kullanılıyor"
+                });
+            }
+
+            const guncellenenOgretmen =
+                await prisma.ogretmenler.update({
+                    where: {
+                        id: ogretmenId
+                    },
+
+                    data: {
+                        ad:
+                            duzenlenmisAd,
+
+                        soyad:
+                            duzenlenmisSoyad,
+
+                        sicil_no:
+                            duzenlenmisSicilNo,
+
+                        brans:
+                            duzenlenmisBrans
+                    }
+                });
+
+            return res.json({
+                mesaj:
+                    "Öğretmen başarıyla güncellendi",
+
+                ogretmen:
+                    guncellenenOgretmen
+            });
+
+        } catch (hata) {
+            console.error(
+                "Öğretmen güncelleme hatası:",
+                hata
+            );
+
+            return res.status(500).json({
+                mesaj:
+                    "Öğretmen güncellenemedi",
+
+                hata:
+                    hata.message
+            });
+        }
+    }
+);
+
+
+/* =====================================================
+   ADMIN: ÖĞRETMENİ PASİFE ALMA
+===================================================== */
+
+app.delete(
+    "/api/ogretmenler/:id",
+    kimlikDogrula,
+    rolDogrula("admin"),
+    async (req, res) => {
+        try {
+            const ogretmenId =
+                Number(req.params.id);
+
+            if (
+                !Number.isInteger(ogretmenId) ||
+                ogretmenId <= 0
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Geçerli bir öğretmen ID değeri gönderilmelidir"
+                });
+            }
+
+            const ogretmen =
+                await prisma.ogretmenler.findUnique({
+                    where: {
+                        id: ogretmenId
+                    }
+                });
+
+            if (!ogretmen) {
+                return res.status(404).json({
+                    mesaj:
+                        "Öğretmen bulunamadı"
+                });
+            }
+
+            if (!ogretmen.aktif) {
+                return res.status(400).json({
+                    mesaj:
+                        "Öğretmen zaten pasif durumda"
+                });
+            }
+
+            const islemler = [
+                prisma.ogretmenler.update({
+                    where: {
+                        id: ogretmenId
+                    },
+
+                    data: {
+                        aktif: false
+                    }
+                })
+            ];
+
+            if (ogretmen.kullanici_id) {
+                islemler.push(
+                    prisma.kullanicilar.update({
+                        where: {
+                            id:
+                                ogretmen.kullanici_id
+                        },
+
+                        data: {
+                            aktif: false
+                        }
+                    })
+                );
+            }
+
+            await prisma.$transaction(
+                islemler
+            );
+
+            return res.json({
+                mesaj:
+                    "Öğretmen pasif duruma getirildi"
+            });
+
+        } catch (hata) {
+            console.error(
+                "Öğretmen pasife alma hatası:",
+                hata
+            );
+
+            return res.status(500).json({
+                mesaj:
+                    "Öğretmen pasif duruma getirilemedi",
+
+                hata:
+                    hata.message
+            });
+        }
+    }
+);
+
+
+/* =====================================================
+   ADMIN: ÖĞRETMENİ YENİDEN AKTİFLEŞTİRME
+===================================================== */
+
+app.patch(
+    "/api/ogretmenler/:id/aktiflestir",
+    kimlikDogrula,
+    rolDogrula("admin"),
+    async (req, res) => {
+        try {
+            const ogretmenId =
+                Number(req.params.id);
+
+            if (
+                !Number.isInteger(ogretmenId) ||
+                ogretmenId <= 0
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Geçerli bir öğretmen ID değeri gönderilmelidir"
+                });
+            }
+
+            const ogretmen =
+                await prisma.ogretmenler.findUnique({
+                    where: {
+                        id: ogretmenId
+                    }
+                });
+
+            if (!ogretmen) {
+                return res.status(404).json({
+                    mesaj:
+                        "Öğretmen bulunamadı"
+                });
+            }
+
+            if (ogretmen.aktif) {
+                return res.status(400).json({
+                    mesaj:
+                        "Öğretmen zaten aktif durumda"
+                });
+            }
+
+            const islemler = [
+                prisma.ogretmenler.update({
+                    where: {
+                        id: ogretmenId
+                    },
+
+                    data: {
+                        aktif: true
+                    }
+                })
+            ];
+
+            if (ogretmen.kullanici_id) {
+                islemler.push(
+                    prisma.kullanicilar.update({
+                        where: {
+                            id:
+                                ogretmen.kullanici_id
+                        },
+
+                        data: {
+                            aktif: true
+                        }
+                    })
+                );
+            }
+
+            await prisma.$transaction(
+                islemler
+            );
+
+            return res.json({
+                mesaj:
+                    "Öğretmen yeniden aktifleştirildi"
+            });
+
+        } catch (hata) {
+            console.error(
+                "Öğretmen aktifleştirme hatası:",
+                hata
+            );S
+
+            return res.status(500).json({
+                mesaj:
+                    "Öğretmen aktifleştirilemedi",
+
+                hata:
+                    hata.message
+            });
+        }
+    }
+);
+
+/* =====================================================
+   ADMIN: AKTİF VE PASİF TÜM DERSLERİ GETİR
+===================================================== */
+
+app.get(
+    "/api/dersler/tumu",
+    kimlikDogrula,
+    rolDogrula("admin"),
+    async (req, res) => {
+        try {
+            const dersler =
+                await prisma.dersler.findMany({
+                    orderBy: [
+                        {
+                            aktif: "desc"
+                        },
+                        {
+                            ders_kodu: "asc"
+                        }
+                    ]
+                });
+
+            return res.json({
+                dersler
+            });
+
+        } catch (hata) {
+            console.error(
+                "Tüm dersleri getirme hatası:",
+                hata
+            );
+
+            return res.status(500).json({
+                mesaj:
+                    "Dersler getirilemedi",
+
+                hata:
+                    hata.message
+            });
+        }
+    }
+);
+
+
+/* =====================================================
+   ADMIN: DERS GÜNCELLEME
+===================================================== */
+
+app.put(
+    "/api/dersler/:id",
+    kimlikDogrula,
+    rolDogrula("admin"),
+    async (req, res) => {
+        try {
+            const dersId =
+                Number(req.params.id);
+
+            const {
+                ders_kodu,
+                ders_adi,
+                aciklama
+            } = req.body;
+
+            const duzenlenmisDersKodu =
+                String(ders_kodu || "")
+                    .trim()
+                    .toUpperCase();
+
+            const duzenlenmisDersAdi =
+                String(ders_adi || "")
+                    .trim();
+
+            const duzenlenmisAciklama =
+                String(aciklama || "")
+                    .trim();
+
+            if (
+                !Number.isInteger(dersId) ||
+                dersId <= 0
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Geçerli bir ders ID değeri gönderilmelidir"
+                });
+            }
+
+            if (
+                !duzenlenmisDersKodu ||
+                !duzenlenmisDersAdi
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Ders kodu ve ders adı zorunludur"
+                });
+            }
+
+            if (
+                duzenlenmisDersKodu.length > 30
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Ders kodu en fazla 30 karakter olabilir"
+                });
+            }
+
+            if (
+                duzenlenmisDersAdi.length > 150
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Ders adı en fazla 150 karakter olabilir"
+                });
+            }
+
+            if (
+                duzenlenmisAciklama.length > 500
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Ders açıklaması en fazla 500 karakter olabilir"
+                });
+            }
+
+            const mevcutDers =
+                await prisma.dersler.findUnique({
+                    where: {
+                        id: dersId
+                    }
+                });
+
+            if (!mevcutDers) {
+                return res.status(404).json({
+                    mesaj:
+                        "Ders bulunamadı"
+                });
+            }
+
+            const ayniKodluDers =
+                await prisma.dersler.findFirst({
+                    where: {
+                        ders_kodu:
+                            duzenlenmisDersKodu,
+
+                        NOT: {
+                            id: dersId
+                        }
+                    }
+                });
+
+            if (ayniKodluDers) {
+                return res.status(409).json({
+                    mesaj:
+                        "Bu ders kodu başka bir ders tarafından kullanılıyor"
+                });
+            }
+
+            const guncellenenDers =
+                await prisma.dersler.update({
+                    where: {
+                        id: dersId
+                    },
+
+                    data: {
+                        ders_kodu:
+                            duzenlenmisDersKodu,
+
+                        ders_adi:
+                            duzenlenmisDersAdi,
+
+                        aciklama:
+                            duzenlenmisAciklama ||
+                            null
+                    }
+                });
+
+            return res.json({
+                mesaj:
+                    "Ders başarıyla güncellendi",
+
+                ders:
+                    guncellenenDers
+            });
+
+        } catch (hata) {
+            console.error(
+                "Ders güncelleme hatası:",
+                hata
+            );
+
+            return res.status(500).json({
+                mesaj:
+                    "Ders güncellenemedi",
+
+                hata:
+                    hata.message
+            });
+        }
+    }
+);
+
+
+/* =====================================================
+   ADMIN: DERSİ PASİFE ALMA
+===================================================== */
+
+app.delete(
+    "/api/dersler/:id",
+    kimlikDogrula,
+    rolDogrula("admin"),
+    async (req, res) => {
+        try {
+            const dersId =
+                Number(req.params.id);
+
+            if (
+                !Number.isInteger(dersId) ||
+                dersId <= 0
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Geçerli bir ders ID değeri gönderilmelidir"
+                });
+            }
+
+            const ders =
+                await prisma.dersler.findUnique({
+                    where: {
+                        id: dersId
+                    }
+                });
+
+            if (!ders) {
+                return res.status(404).json({
+                    mesaj:
+                        "Ders bulunamadı"
+                });
+            }
+
+            if (!ders.aktif) {
+                return res.status(400).json({
+                    mesaj:
+                        "Ders zaten pasif durumda"
+                });
+            }
+
+            const pasifDers =
+                await prisma.dersler.update({
+                    where: {
+                        id: dersId
+                    },
+
+                    data: {
+                        aktif: false
+                    }
+                });
+
+            return res.json({
+                mesaj:
+                    "Ders pasif duruma getirildi",
+
+                ders:
+                    pasifDers
+            });
+
+        } catch (hata) {
+            console.error(
+                "Ders pasife alma hatası:",
+                hata
+            );
+
+            return res.status(500).json({
+                mesaj:
+                    "Ders pasif duruma getirilemedi",
+
+                hata:
+                    hata.message
+            });
+        }
+    }
+);
+
+
+/* =====================================================
+   ADMIN: DERSİ YENİDEN AKTİFLEŞTİRME
+===================================================== */
+
+app.patch(
+    "/api/dersler/:id/aktiflestir",
+    kimlikDogrula,
+    rolDogrula("admin"),
+    async (req, res) => {
+        try {
+            const dersId =
+                Number(req.params.id);
+
+            if (
+                !Number.isInteger(dersId) ||
+                dersId <= 0
+            ) {
+                return res.status(400).json({
+                    mesaj:
+                        "Geçerli bir ders ID değeri gönderilmelidir"
+                });
+            }
+
+            const ders =
+                await prisma.dersler.findUnique({
+                    where: {
+                        id: dersId
+                    }
+                });
+
+            if (!ders) {
+                return res.status(404).json({
+                    mesaj:
+                        "Ders bulunamadı"
+                });
+            }
+
+            if (ders.aktif) {
+                return res.status(400).json({
+                    mesaj:
+                        "Ders zaten aktif durumda"
+                });
+            }
+
+            const aktifDers =
+                await prisma.dersler.update({
+                    where: {
+                        id: dersId
+                    },
+
+                    data: {
+                        aktif: true
+                    }
+                });
+
+            return res.json({
+                mesaj:
+                    "Ders yeniden aktifleştirildi",
+
+                ders:
+                    aktifDers
+            });
+
+        } catch (hata) {
+            console.error(
+                "Ders aktifleştirme hatası:",
+                hata
+            );
+
+            return res.status(500).json({
+                mesaj:
+                    "Ders aktifleştirilemedi",
 
                 hata:
                     hata.message
